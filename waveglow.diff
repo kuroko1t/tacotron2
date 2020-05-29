@@ -1,0 +1,46 @@
+diff --git a/convert_model.py b/convert_model.py
+index 32e77e2..bd73fd9 100644
+--- a/convert_model.py
++++ b/convert_model.py
+@@ -3,10 +3,11 @@ import copy
+ import torch
+ 
+ def _check_model_old_version(model):
+-    if hasattr(model.WN[0], 'res_layers') or hasattr(model.WN[0], 'cond_layers'):
+-        return True
+-    else:
+-        return False
++    #if hasattr(model.WN[0], 'res_layers') or hasattr(model.WN[0], 'cond_layers'):
++    #    return True
++    #else:
++    #    return False
++    return True
+ 
+ 
+ def _update_model_res_skip(old_model, new_model):
+@@ -55,18 +56,20 @@ def _update_model_cond(old_model, new_model):
+ 
+ def update_model(old_model):
+     if not _check_model_old_version(old_model):
++        print('koko')
+         return old_model
+     new_model = copy.deepcopy(old_model)
+-    if hasattr(old_model.WN[0], 'res_layers'):
+-        _update_model_res_skip(old_model, new_model)
+-    if hasattr(old_model.WN[0], 'cond_layers'):
+-        _update_model_cond(old_model, new_model)
++    #if hasattr(old_model.WN[0], 'res_layers'):
++    #    _update_model_res_skip(old_model, new_model)
++    #if hasattr(old_model.WN[0], 'cond_layers'):
++    #    _update_model_cond(old_model, new_model)
+     return new_model
+ 
+ if __name__ == '__main__':
+     old_model_path = sys.argv[1]
+     new_model_path = sys.argv[2]
+     model = torch.load(old_model_path)
+-    model['model'] = update_model(model['model'])
++    print(model['state_dict'].keys())
++    model['state_dict'] = update_model(model['state_dict'])
+     torch.save(model, new_model_path)
+     
